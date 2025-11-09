@@ -8,6 +8,17 @@ const ShopPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Category mapping from display name to backend category
+  const categoryMap = {
+    'all': 'all',
+    'hair': 'hair',
+    'hat': 'hat',
+    'shirt': 'shirt',
+    'pants': 'pants',
+    'shoes': 'shoes'
+  };
 
   // Fetch products on component mount
   useEffect(() => {
@@ -27,6 +38,16 @@ const ShopPage = () => {
 
     fetchProducts();
   }, []);
+
+  // Filter products based on selected category
+  const filteredProducts = selectedCategory === 'all' 
+    ? products 
+    : products.filter(product => product.category === selectedCategory);
+
+  // Handle category filter click
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
 
   // Handle buy button click
   const handleBuyProduct = async (productId) => {
@@ -56,7 +77,7 @@ const ShopPage = () => {
     return (
       <div className="shop-container">
         <div className="shop-header">
-          <h1 className="shop-title">🏪 Baby Shop</h1>
+          <h1 className="shop-title">🏪 Accessory Shop</h1>
           <p className="shop-subtitle">Loading products...</p>
         </div>
         <div className="loading-spinner">⏳ Loading...</div>
@@ -69,7 +90,7 @@ const ShopPage = () => {
     return (
       <div className="shop-container">
         <div className="shop-header">
-          <h1 className="shop-title">🏪 Baby Shop</h1>
+          <h1 className="shop-title">🏪 Accessory Shop</h1>
           <p className="shop-subtitle" style={{ color: '#ff6b6b' }}>{error}</p>
         </div>
       </div>
@@ -80,7 +101,7 @@ const ShopPage = () => {
     <div className="shop-container">
       {/* Header Section */}
       <div className="shop-header">
-        <h1 className="shop-title">🏪 Baby Shop</h1>
+        <h1 className="shop-title">🏪 Accessory Shop</h1>
         <p className="shop-subtitle">Everything you need for your little one!</p>
         <div className="shop-balance">
           <span className="balance-label">Your Balance:</span>
@@ -90,24 +111,57 @@ const ShopPage = () => {
 
       {/* Filter Buttons */}
       <div className="shop-filters">
-        <button className="filter-btn filter-active">All Items</button>
-        <button className="filter-btn">Essentials</button>
-        <button className="filter-btn">Toys</button>
-        <button className="filter-btn">Food</button>
-        <button className="filter-btn">Equipment</button>
-        <button className="filter-btn">Clothing</button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'all' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('all')}
+        >
+          All Items
+        </button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'hair' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('hair')}
+        >
+          Hairstyles
+        </button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'hat' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('hat')}
+        >
+          Hats
+        </button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'shirt' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('shirt')}
+        >
+          Tops
+        </button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'pants' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('pants')}
+        >
+          Bottoms
+        </button>
+        <button 
+          className={`filter-btn ${selectedCategory === 'shoes' ? 'filter-active' : ''}`}
+          onClick={() => handleCategoryClick('shoes')}
+        >
+          Shoes
+        </button>
       </div>
 
       {/* Products Grid */}
       <div className="products-grid">
-        {products.length === 0 ? (
+        {filteredProducts.length === 0 ? (
           <div className="no-products">
-            <p>No products available at the moment.</p>
+            <p>No {selectedCategory === 'all' ? 'products' : selectedCategory} items available at the moment.</p>
           </div>
         ) : (
-          products.map((product) => (
+          filteredProducts.map((product) => (
             <div key={product.id} className="product-card">
-              <div className="product-emoji">{product.emoji}</div>
+              <div className="product-back_image">
+                <img src={product.image} alt={product.name} width="200" height="200"/>
+              </div>
+
               <div className="product-category">{product.category}</div>
               <h3 className="product-name">{product.name}</h3>
               <div className="product-price">${product.price}</div>
@@ -123,16 +177,6 @@ const ShopPage = () => {
         )}
       </div>
 
-      {/* Cart Summary */}
-      <div className="cart-summary">
-        <div className="cart-info">
-          <span className="cart-icon">🛒</span>
-          <span className="cart-text">Cart: 0 items</span>
-        </div>
-        <button className="checkout-button">
-          <span>💳 Checkout</span>
-        </button>
-      </div>
     </div>
   );
 };

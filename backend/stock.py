@@ -7,10 +7,10 @@ class Stock:
         self.ticker = yf.Ticker(symbol)
         self.price = None
 
-    def last_n_minutes_data(self, n):
+    def last_n_minutes_data(self, newest, n):
         """Fetch last 5 minutes of 1-minute interval data"""
-        data = self.ticker.history(period="1d", interval="1m")
-        last_n = data.iloc[-n:]
+        data = self.ticker.history(period="2d", interval="1m")
+        last_n = data.iloc[newest-n:newest] #goes from n-120 to n
         closes = last_n["Close"].tolist()
         self.price = closes[-1]
         change = closes[-1] - closes[0]

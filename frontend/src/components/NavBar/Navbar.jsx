@@ -9,8 +9,11 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <h1>Avatar Exchange</h1>
+          <Link to="/">
+            <img src="https://media.discordapp.net/attachments/1436081196634341396/1437038720741146655/image.png?ex=6911ca19&is=69107899&hm=dd885fd0150bed07e76022ca25822b4384202ef56705979b20a63e0fe5ef3d8e&=&format=webp&quality=lossless&width=1076&height=528" alt="Avatar Exchange Logo" className="navbar-logo" />
+          </Link>
         </div>
+
         
         <ul className="navbar-menu">
           <li className="navbar-item">

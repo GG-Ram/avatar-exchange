@@ -20,6 +20,12 @@
   flex-wrap: wrap;
 }
 
+.navbar-logo {
+  height: 90px; /* adjust as needed */
+  width: auto;  /* maintain aspect ratio */
+}
+
+
 .navbar-brand h1 {
   color: white;
   margin: 0;

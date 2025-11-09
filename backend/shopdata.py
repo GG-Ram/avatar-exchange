@@ -1,5 +1,12 @@
-products = [
-    {
+import accessory
+
+products = []
+
+for i in accessory.ALL_ACCESSORIES:
+    products.append(i.to_dict())
+
+
+    """{
         "id": 1,
         "name": "Baby Bottle",
         "price": 25,
@@ -83,4 +90,10 @@ products = [
         "emoji": "📚",
         "category": "Education"
     }
-]
+
+    l = sum([len(i) for i in ALL_ACCESSORIES])
+    for i in ALL_ACCESSORIES:
+        for j in ALL_ACCESSORIES[i]:
+            """
+
+
