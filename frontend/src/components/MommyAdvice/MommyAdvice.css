@@ -1,0 +1,95 @@
+.mommy-advice {
+    margin: 20px 0;
+}
+
+.advice-button {
+    background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.advice-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+}
+
+.advice-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.advice-box {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe8ee 100%);
+    border: 2px solid #ffb3c1;
+    border-radius: 15px;
+    padding: 20px;
+    animation: slideIn 0.3s ease;
+}
+
+.advice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.advice-header h3 {
+    margin: 0;
+    color: #c06c84;
+    font-size: 20px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #c06c84;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 107, 157, 0.1);
+}
+
+.advice-text {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.advice-error {
+    margin-top: 15px;
+    padding: 15px;
+    background: #ffe0e0;
+    border: 2px solid #ffb3b3;
+    border-radius: 10px;
+    color: #c00;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

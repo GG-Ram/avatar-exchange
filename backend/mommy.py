@@ -65,25 +65,11 @@ class Mommy:
         return {slot: acc for slot, acc in self.equipped.items() if acc is not None}
     
     def to_dict(self):
-        """Convert to dictionary for API/JSON"""
         return {
-            "name": self.name,
-            "equipped": {
-                slot: {
-                    "name": acc.name,
-                    "price": acc.price,
-                    "front": acc.front,
-                    "back": acc.back
-                } if acc else None
+            'owned_accessories': [acc.to_dict() for acc in self.owned_accessories],
+            'equipped': {
+                slot: acc.to_dict() if acc else None 
                 for slot, acc in self.equipped.items()
-            },
-            "owned_accessories": [
-                {
-                    "name": acc.name,
-                    "price": acc.price,
-                    "front": acc.front,
-                    "back": acc.back
-                }
-                for acc in self.owned_accessories
-            ]
+            }
         }
+    

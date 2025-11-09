@@ -4,7 +4,7 @@ import { get } from '../util/util';
 /**
  * Custom hook for fetching stock data
  */
-export const useStockData = (refreshInterval = 1000) => {
+export const useStockData = (refreshInterval = 2000) => {
     const [stocks, setStocks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
