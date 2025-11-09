@@ -64,13 +64,30 @@
     object-fit: contain;
 }
 
-.base-layer { z-index: 1; }
-.hair-back-layer { z-index: 2; }
-.pants-layer { z-index: 3; }
-.shirt-layer { z-index: 4; }
-.shoes-layer { z-index: 5; }
-.hair-front-layer { z-index: 6; }
-.hat-layer { z-index: 7; }
+/* ✅ Character Layers - Correct Z Index Order */
+.base-layer { 
+    z-index: 1;   /* bottom */
+}
+
+.hair-layer { 
+    z-index: 2;   /* hair sits ON TOP of base */
+}
+
+.pants-layer { 
+    z-index: 3; 
+}
+
+.shirt-layer { 
+    z-index: 4; 
+}
+
+.shoes-layer { 
+    z-index: 5; 
+}
+
+.hat-layer { 
+    z-index: 6;  /* top */
+}
 
 /* Equipped Info */
 .equipped-info {

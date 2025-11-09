@@ -1,2 +1,2 @@
-# stock-mommy
+# Avatar Exchange
 For the hackathon!
