@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from models import state
 from stock import Stock
 from config import STOCKS
+from auth_helpers import login_required, get_current_user
 
 stock_bp = Blueprint('stocks', __name__)
 
@@ -39,8 +40,13 @@ def get_stocks():
     return jsonify(result)
 
 @stock_bp.route('/api/buy', methods=['POST'])
+@login_required
 def buy_stock():
     """Buy shares of a stock"""
+    user = get_current_user()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
     data = request.get_json()
     symbol = data.get('symbol')
     shares = data.get('shares')
@@ -61,13 +67,13 @@ def buy_stock():
         latest_price = stock_data['price']
         stock.price = latest_price
 
-        success = state.new_user.buy_stock(stock, shares)
+        success = user.buy_stock(stock, shares)
 
         if success:
             return jsonify({
                 "success": True,
                 "message": f"Bought {shares} shares of {symbol}",
-                "user": state.new_user.to_dict()
+                "user": user.to_dict()
             }), 200
         else:
             return jsonify({"success": False, "error": "Insufficient funds"}), 400
@@ -76,8 +82,13 @@ def buy_stock():
         return jsonify({"error": str(e)}), 500
 
 @stock_bp.route('/api/sell', methods=['POST'])
+@login_required
 def sell_stock():
     """Sell shares of a stock"""
+    user = get_current_user()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
     data = request.get_json()
     symbol = data.get('symbol')
     shares = data.get('shares')
@@ -86,19 +97,19 @@ def sell_stock():
         return jsonify({"error": "Invalid symbol or shares"}), 400
 
     # Find the position and update its price with simulated data
-    for position in state.new_user.positions:
+    for position in user.positions:
         if position.stock_data.symbol == symbol:
             # Use simulated price from current_index
             stock_data = position.stock_data.last_n_minutes_data(newest=state.current_index, n=1)
             position.stock_data.price = stock_data['price']
             break
 
-    success = state.new_user.sell_stock(symbol, shares)
+    success = user.sell_stock(symbol, shares)
     if success:
         return jsonify({
             "success": True,
             "message": f"Sold {shares} shares of {symbol}",
-            "user": state.new_user.to_dict()
+            "user": user.to_dict()
         }), 200
     else:
         return jsonify({"success": False, "error": "Insufficient shares or stock not owned"}), 400

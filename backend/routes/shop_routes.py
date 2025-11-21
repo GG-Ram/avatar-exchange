@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from models import state
 from shopdata import products
 from accessory import ALL_ACCESSORIES
+from auth_helpers import login_required, get_current_user
 
 shop_bp = Blueprint('shop', __name__)
 
@@ -16,15 +17,20 @@ def get_accessories():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @shop_bp.route('/api/buyAccessory', methods=['POST'])
+@login_required
 def buy_accessory():
     """Buy an accessory from the shop"""
+    user = get_current_user()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
     try:
         data = request.get_json()
         product_id = data.get('id')
         
         print(f"🛒 Buying accessory with ID: {product_id}")
         
-        result = state.new_user.buy_product(product_id, products)
+        result = user.buy_product(product_id, products)
         
         print(f"🛒 Purchase result: {result}")
 
@@ -47,7 +53,7 @@ def buy_accessory():
             return jsonify({
                 'success': True,
                 'message': result['message'],
-                'new_balance': state.new_user.balance
+                'new_balance': user.balance
             }), 200
         else:
             return jsonify({

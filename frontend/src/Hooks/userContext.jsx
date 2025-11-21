@@ -1,16 +1,37 @@
 // contexts/UserContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { get } from '../util/util';
+import { getCurrentUser, login as loginApi, register as registerApi, logout as logoutApi } from '../services/authService';
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [userInfo, setUserInfo] = useState(null); // User info (username, email, id)
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        fetchUser();
+        checkAuth();
     }, []);
+
+    const checkAuth = async () => {
+        try {
+            const response = await getCurrentUser();
+            if (response.success) {
+                setUser(response.userData);
+                setUserInfo(response.user);
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+        } catch (error) {
+            console.error('Error checking auth:', error);
+            setIsAuthenticated(false);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchUser = async () => {
         try {
@@ -18,8 +39,64 @@ export function UserProvider({ children }) {
             setUser(data);
         } catch (error) {
             console.error('Error fetching user:', error);
-        } finally {
-            setLoading(false);
+            if (error.response?.status === 401) {
+                setIsAuthenticated(false);
+                setUser(null);
+                setUserInfo(null);
+            }
+        }
+    };
+
+    const login = async (username, password) => {
+        try {
+            const response = await loginApi(username, password);
+            if (response.success) {
+                setUser(response.userData);
+                setUserInfo(response.user);
+                setIsAuthenticated(true);
+                return { success: true };
+            }
+            return { success: false, error: response.error };
+        } catch (error) {
+            return { 
+                success: false, 
+                error: error.response?.data?.error || 'Login failed' 
+            };
+        }
+    };
+
+    const register = async (username, email, password) => {
+        try {
+            const response = await registerApi(username, email, password);
+            if (response.success) {
+                setUser(response.userData);
+                setUserInfo(response.user);
+                setIsAuthenticated(true);
+                return { success: true };
+            }
+            return { success: false, error: response.error };
+        } catch (error) {
+            return { 
+                success: false, 
+                error: error.response?.data?.error || 'Registration failed' 
+            };
+        }
+    };
+
+    const logout = async () => {
+        try {
+            await logoutApi();
+            // Token is already removed by logoutApi
+            setUser(null);
+            setUserInfo(null);
+            setIsAuthenticated(false);
+        } catch (error) {
+            console.error('Error logging out:', error);
+            // Clear state even if API call fails
+            localStorage.removeItem('token'); // Ensure token is removed
+            setUser(null);
+            setUserInfo(null);
+            setIsAuthenticated(false);
         }
     };
 
@@ -28,7 +105,19 @@ export function UserProvider({ children }) {
     };
 
     return (
-        <UserContext.Provider value={{ user, setUser, updateBalance, loading, fetchUser }}>
+        <UserContext.Provider value={{ 
+            user, 
+            userInfo,
+            setUser, 
+            updateBalance, 
+            loading, 
+            fetchUser,
+            login,
+            register,
+            logout,
+            isAuthenticated,
+            checkAuth
+        }}>
             {children}
         </UserContext.Provider>
     );

@@ -1,5 +1,7 @@
 from accessory import Accessory
 from stock import Stock
+from models.user_model import UserModel
+from config import STOCKS
 
 class Portfolio_Stock:
     def __init__(self, shares, stock_data: Stock, buyPrice=None):
@@ -32,10 +34,65 @@ class Portfolio_Stock:
         }
 
 class User:
-    def __init__(self, balance=500):
+    def __init__(self, balance=500, user_id=None):
+        """
+        Initialize User instance.
+        If user_id is provided, load from MongoDB.
+        Otherwise, create in-memory user (for backward compatibility).
+        """
+        self.user_id = user_id
         self.balance = balance
         self.positions = []  # list[Portfolio_Stock]
         self.inventory = []
+        
+        # Load from MongoDB if user_id is provided
+        if user_id:
+            self._load_from_db()
+    
+    def _load_from_db(self):
+        """Load user data from MongoDB"""
+        if not self.user_id:
+            return
+        
+        user_data = UserModel.get_user_data(self.user_id)
+        if user_data:
+            self.balance = user_data.get("balance", 500)
+            self.inventory = user_data.get("inventory", [])
+            
+            # Reconstruct Portfolio_Stock objects from positions
+            self.positions = []
+            for pos_data in user_data.get("positions", []):
+                symbol = pos_data.get("symbol")
+                if symbol in STOCKS:
+                    stock = Stock(symbol, STOCKS[symbol], fetch_on_init=False)
+                    portfolio_stock = Portfolio_Stock(
+                        pos_data.get("shares", 0),
+                        stock,
+                        pos_data.get("buyPrice", 0)
+                    )
+                    self.positions.append(portfolio_stock)
+    
+    def _save_to_db(self):
+        """Save user data to MongoDB"""
+        if not self.user_id:
+            return
+        
+        # Prepare positions data
+        positions_data = []
+        for pos in self.positions:
+            positions_data.append({
+                "symbol": pos.stock_data.symbol,
+                "name": pos.stock_data.name,
+                "shares": pos.shares,
+                "buyPrice": pos.buyPrice
+            })
+        
+        # Update all fields in a single operation
+        UserModel.update_user(self.user_id, {
+            "balance": round(self.balance, 2),
+            "positions": positions_data,
+            "inventory": self.inventory
+        })
 
     # ----------------- Shop / Inventory -----------------
     def buy_product(self, product_id, products_list):
@@ -76,6 +133,9 @@ class User:
         self.balance -= price
         products_list.pop(product_index)
         self.inventory.append(product)
+        
+        # Save to MongoDB if user_id exists
+        self._save_to_db()
 
         return {
             "success": True,
@@ -103,10 +163,14 @@ class User:
                     / total_shares
                 )
                 position.shares = total_shares
+                # Save to MongoDB if user_id exists
+                self._save_to_db()
                 return True
 
         # New stock
         self.positions.append(Portfolio_Stock(shares, stock, stock.price))
+        # Save to MongoDB if user_id exists
+        self._save_to_db()
         return True
 
     def sell_stock(self, symbol: str, shares: int):
@@ -137,6 +201,8 @@ class User:
                     position.shares -= shares
                     if position.shares == 0:
                         self.positions.remove(position)
+                    # Save to MongoDB if user_id exists
+                    self._save_to_db()
                     return True
         return False
 

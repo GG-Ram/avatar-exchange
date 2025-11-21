@@ -2,4 +2,8 @@ flask==3.1.2
 flask-cors==4.0.1
 openai==2.8.1
 yfinance==0.2.47
+pymongo==4.10.1
+bcrypt==4.2.0
+python-dotenv==1.0.0
+PyJWT==2.8.0
 
