@@ -1,79 +1,69 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Arial', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, #fff5f7 0%, #ffe0e8 100%);
+/* App-specific styles */
+.app-container {
   min-height: 100vh;
-  padding-top: 80px; /* Space for fixed navbar */
+  position: relative;
 }
 
-.app {
-  min-height: 100vh;
-}
-
-.main-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.page {
-  background: white;
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.5s ease;
-}
-
-.page h2 {
-  color: #ff6b9d;
-  margin-bottom: 1rem;
-  font-size: 2rem;
+/* Loading States */
+.loading-spinner {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  min-height: 400px;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }
 
-.page p {
-  color: #666;
-  line-height: 1.6;
-  font-size: 1.1rem;
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--background-light);
+  border-top-color: var(--primary-pink);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  body {
-    padding-top: 140px; /* More space for two-row navbar on mobile */
-  }
-
-  .main-content {
-    padding: 1rem;
-  }
-
-  .page {
-    padding: 2rem;
-  }
-
-  .page h2 {
-    font-size: 1.5rem;
-  }
-
-  .page p {
-    font-size: 1rem;
-  }
+/* Error States */
+.error-message {
+  background: linear-gradient(135deg, #ffe0e0 0%, #ffd0d0 100%);
+  border: 2px solid var(--danger);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  color: var(--danger);
+  text-align: center;
+  font-weight: 600;
+  margin: var(--spacing-md) 0;
 }
+
+/* Success States */
+.success-message {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid var(--success);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  color: var(--success);
+  text-align: center;
+  font-weight: 600;
+  margin: var(--spacing-md) 0;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
