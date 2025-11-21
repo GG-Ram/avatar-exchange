@@ -59,7 +59,7 @@ def get_funny_financial_advice(user_data):
         debug(f"Constructed prompt:\n{prompt}")
 
         response = client.chat.completions.create(
-            model="gpt-4.1-mini",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",

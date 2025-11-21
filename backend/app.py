@@ -26,9 +26,15 @@ STOCKS = {
 new_user = User(balance=500)
 mommy_character = Mommy()
 
-# Global index for simulating “live” minutes
+# Global index for simulating "live" minutes
 current_index = 153
 MAX_INDEX = 500
+
+# Cache Stock objects to avoid creating new ones on every request
+stock_cache = {}
+for symbol, name in STOCKS.items():
+    # Create stocks without fetching on init to avoid rate limiting
+    stock_cache[symbol] = Stock(symbol, name, fetch_on_init=False)
 
 @app.route("/api/stocks")
 def get_stocks():
@@ -38,7 +44,8 @@ def get_stocks():
 
     for symbol, name in STOCKS.items():
         try:
-            stock = Stock(symbol, name)
+            # Use cached stock object instead of creating new one
+            stock = stock_cache[symbol]
             
             # Get last 120 minutes ending at current_index
             data = stock.last_n_minutes_data(newest=current_index, n=120)
@@ -77,7 +84,12 @@ def buy_stock():
     if not symbol or not shares or shares <= 0:
         return jsonify({"error": "Missing symbol or shares"}), 400
 
-    stock = Stock(symbol, STOCKS.get(symbol, symbol))
+    # Use cached stock or create new one if not in cache
+    if symbol in stock_cache:
+        stock = stock_cache[symbol]
+    else:
+        stock = Stock(symbol, STOCKS.get(symbol, symbol), fetch_on_init=False)
+        stock_cache[symbol] = stock
 
     try:
         # Use simulated price from current_index instead of real yfinance
