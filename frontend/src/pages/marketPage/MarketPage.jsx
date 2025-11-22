@@ -49,16 +49,28 @@ function MarketPage() {
         return Array.from(stockMap.values());
     }, [defaultStocks, searchedStocks]);
 
+    // Get user's owned shares for each stock
+    const getUserShares = (symbol) => {
+        const position = user?.positions?.find(p => p.stock_data?.symbol === symbol);
+        return position?.shares || 0;
+    };
+
     // Filter stocks based on active tab
     const filteredStocks = useMemo(() => {
         switch (activeTab) {
             case 'favorites':
+                // Show all favorited stocks, including featured ones
                 return allStocks.filter(stock => isFavorite(stock.symbol));
             case 'featured':
                 return allStocks.filter(stock => stock.isFeatured);
             case 'all':
             default:
-                return allStocks;
+                // In "All Stocks", only show:
+                // 1. Stocks that were manually searched (isSearched = true)
+                // 2. Featured stocks that are favorited
+                return allStocks.filter(stock => 
+                    stock.isSearched || (stock.isFeatured && isFavorite(stock.symbol))
+                );
         }
     }, [allStocks, activeTab, isFavorite]);
 
@@ -130,6 +142,7 @@ function MarketPage() {
                                 isFavorite={isFavorite(stock.symbol)}
                                 onToggleFavorite={toggleFavorite}
                                 isFeatured={stock.isFeatured}
+                                userShares={getUserShares(stock.symbol)}
                             />
                         ))}
                     </div>

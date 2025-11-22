@@ -241,6 +241,20 @@
   color: var(--danger);
 }
 
+.price-change {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.price-change.positive {
+  color: var(--success);
+}
+
+.price-change.negative {
+  color: var(--danger);
+}
+
 /* Inventory Grid */
 .inventory-grid {
   display: grid;

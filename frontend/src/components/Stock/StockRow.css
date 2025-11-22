@@ -108,6 +108,24 @@
   flex: 1;
 }
 
+.stock-symbol-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.owned-shares-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  background: linear-gradient(135deg, var(--primary-pink-light) 0%, var(--secondary-pink) 100%);
+  color: var(--primary-pink-dark);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  white-space: nowrap;
+}
+
 .stock-symbol {
   margin: 0;
   font-size: 1.625rem;

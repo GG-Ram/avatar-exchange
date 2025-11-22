@@ -3,7 +3,7 @@ import './StockRow.css';
 import { buyStock, sellStock } from '../../services/stockService';
 import { useUser } from '../../Hooks/userContext';
 
-function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavorite, onToggleFavorite, isFeatured }) {
+function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavorite, onToggleFavorite, isFeatured, userShares }) {
     const [shares, setShares] = useState(1);
     const { fetchUser } = useUser();
     
@@ -52,7 +52,14 @@ function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavo
             <div className="stock-info">
                 <div className="stock-header">
                     <div className="stock-name-section">
-                        <h2 className="stock-symbol">{stock.symbol}</h2>
+                        <div className="stock-symbol-row">
+                            <h2 className="stock-symbol">{stock.symbol}</h2>
+                            {userShares > 0 && (
+                                <span className="owned-shares-badge">
+                                    {userShares} {userShares === 1 ? 'share' : 'shares'}
+                                </span>
+                            )}
+                        </div>
                         <p className="stock-name">{stock.name}</p>
                     </div>
                     <div className="stock-price-section">

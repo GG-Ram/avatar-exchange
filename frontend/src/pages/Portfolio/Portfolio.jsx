@@ -1,32 +1,43 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { getStockPrices } from "../../services/stockService";
 import { useUser } from "../../Hooks/userContext";
 import "./Portfolio.css";
 
 const Portfolio = () => {
-  const { user } = useUser();
+  const { user, fetchUser } = useUser();
   const [stockPrices, setStockPrices] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStockPrices = async () => {
+      if (!user?.positions || user.positions.length === 0) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const res = await axios.get("http://localhost:5000/api/stocks");
-        const prices = {};
-        res.data.forEach((stock) => {
-          prices[stock.symbol] = stock.price;
-        });
+        // Get all symbols from user's positions
+        const symbols = user.positions.map(p => p.stock_data?.symbol || p.stock_data?.symbol).filter(Boolean);
+        
+        if (symbols.length === 0) {
+          setLoading(false);
+          return;
+        }
+
+        // Fetch prices for all owned stocks
+        const prices = await getStockPrices(symbols);
         setStockPrices(prices);
         setLoading(false);
       } catch (err) {
         console.error("[DEBUG] Error fetching stock prices:", err.message);
+        setLoading(false);
       }
     };
 
     fetchStockPrices();
     const interval = setInterval(fetchStockPrices, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user?.positions]);
 
   const calculateTotalValue = () => {
     return (
@@ -69,21 +80,23 @@ const Portfolio = () => {
         {user?.positions?.length > 0 ? (
           <div className="holdings-grid">
             {user.positions.map((position, i) => {
-              const price =
-                stockPrices[position.stock_data.symbol] ||
-                position.stock_data.price;
+              const symbol = position.stock_data?.symbol || position.symbol;
+              const priceData = stockPrices[symbol] || {};
+              const price = priceData.price || position.stock_data?.price || position.price || 0;
+              const buyPrice = position.buyPrice || position.totalCost / position.shares || 0;
               const totalValue = position.shares * price;
-              const profit = totalValue - position.totalCost;
+              const totalCost = position.totalCost || (buyPrice * position.shares);
+              const profit = totalValue - totalCost;
               const profitPercent =
-                position.totalCost > 0
-                  ? (profit / position.totalCost) * 100
+                totalCost > 0
+                  ? (profit / totalCost) * 100
                   : 0;
 
               return (
                 <div key={i} className="holding-card">
                   <div className="holding-header">
                     <h3 className="stock-symbol">
-                      {position.stock_data.symbol}
+                      {symbol}
                     </h3>
                     <span className="shares-badge">
                       {position.shares} shares
@@ -94,6 +107,17 @@ const Portfolio = () => {
                       <span className="detail-label">Current Price:</span>
                       <span className="detail-value">
                         ${price.toFixed(2)}
+                        {priceData.changePercent !== undefined && (
+                          <span className={`price-change ${priceData.changePercent >= 0 ? 'positive' : 'negative'}`}>
+                            {' '}({priceData.changePercent >= 0 ? '+' : ''}{priceData.changePercent?.toFixed(2)}%)
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Avg Buy Price:</span>
+                      <span className="detail-value">
+                        ${buyPrice.toFixed(2)}
                       </span>
                     </div>
                     <div className="detail-row">

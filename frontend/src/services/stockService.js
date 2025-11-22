@@ -34,3 +34,12 @@ export const sellStock = async (symbol, shares) => {
 export const getStock = async (symbol) => {
     return await get(`/stock/${symbol}`);
 };
+
+/**
+ * Get current prices for multiple stock symbols
+ * @param {string[]} symbols - Array of stock symbols
+ * @returns {Promise} - Object mapping symbols to price data
+ */
+export const getStockPrices = async (symbols) => {
+    return await post('/stocks/prices', { symbols });
+};

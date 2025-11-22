@@ -63,14 +63,17 @@ class User:
             self.positions = []
             for pos_data in user_data.get("positions", []):
                 symbol = pos_data.get("symbol")
-                if symbol in STOCKS:
-                    stock = Stock(symbol, STOCKS[symbol], fetch_on_init=False)
-                    portfolio_stock = Portfolio_Stock(
-                        pos_data.get("shares", 0),
-                        stock,
-                        pos_data.get("buyPrice", 0)
-                    )
-                    self.positions.append(portfolio_stock)
+                # Get stock name from position data or config, fallback to symbol
+                name = pos_data.get("name") or STOCKS.get(symbol) or symbol
+                
+                # Create stock object for any symbol (not just those in STOCKS config)
+                stock = Stock(symbol, name, fetch_on_init=False)
+                portfolio_stock = Portfolio_Stock(
+                    pos_data.get("shares", 0),
+                    stock,
+                    pos_data.get("buyPrice", 0)
+                )
+                self.positions.append(portfolio_stock)
     
     def _save_to_db(self):
         """Save user data to MongoDB"""

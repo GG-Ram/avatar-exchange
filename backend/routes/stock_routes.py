@@ -59,7 +59,16 @@ def buy_stock():
     if symbol in state.stock_cache:
         stock = state.stock_cache[symbol]
     else:
-        stock = Stock(symbol, STOCKS.get(symbol, symbol), fetch_on_init=False)
+        # Try to get stock name from yfinance if not in config
+        name = STOCKS.get(symbol)
+        if not name:
+            try:
+                ticker = yf.Ticker(symbol)
+                info = ticker.info
+                name = info.get('longName') or info.get('shortName') or symbol
+            except:
+                name = symbol
+        stock = Stock(symbol, name, fetch_on_init=False)
         state.stock_cache[symbol] = stock
 
     try:
@@ -155,4 +164,52 @@ def get_stock(symbol):
             "error": True,
             "message": f"Failed to fetch stock data: {str(e)}"
         }), 500
+
+@stock_bp.route("/api/stocks/prices", methods=['POST'])
+def get_stock_prices():
+    """Get current prices for a list of stock symbols"""
+    data = request.get_json()
+    symbols = data.get('symbols', [])
+    
+    if not symbols or not isinstance(symbols, list):
+        return jsonify({"error": "Invalid symbols list"}), 400
+    
+    result = {}
+    
+    for symbol in symbols:
+        symbol = symbol.upper().strip()
+        try:
+            # Check if stock is in cache, otherwise create new one
+            if symbol in state.stock_cache:
+                stock = state.stock_cache[symbol]
+            else:
+                # Try to get stock name from yfinance
+                try:
+                    ticker = yf.Ticker(symbol)
+                    info = ticker.info
+                    name = info.get('longName') or info.get('shortName') or symbol
+                except:
+                    name = symbol
+                
+                # Create stock and add to cache
+                stock = Stock(symbol, name, fetch_on_init=False)
+                state.stock_cache[symbol] = stock
+            
+            # Get current price data
+            stock_data = stock.last_n_minutes_data(newest=state.current_index, n=1)
+            result[symbol] = {
+                "price": stock_data.get('price', 0),
+                "change": stock_data.get('change', 0),
+                "changePercent": stock_data.get('changePercent', 0)
+            }
+        except Exception as e:
+            print(f"Error fetching price for {symbol}: {e}")
+            result[symbol] = {
+                "price": 0,
+                "change": 0,
+                "changePercent": 0,
+                "error": True
+            }
+    
+    return jsonify(result)
 
