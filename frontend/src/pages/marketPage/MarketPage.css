@@ -6,6 +6,78 @@
   background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-light) 50%, var(--background-gradient-end) 100%);
 }
 
+/* Search Section */
+.search-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Stocks Section */
+.stocks-section {
+  margin-top: var(--spacing-md);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.5px;
+}
+
+.stock-count {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  font-weight: 600;
+  padding: 0.375rem 0.875rem;
+  background: linear-gradient(135deg, var(--background-light) 0%, #ffe8f0 100%);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-top: var(--spacing-md);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.7;
+  filter: grayscale(0.3);
+}
+
+.empty-state h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-medium);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 /* Header */
 .header {
   background: linear-gradient(135deg, var(--primary-pink-light) 0%, var(--secondary-pink) 100%);

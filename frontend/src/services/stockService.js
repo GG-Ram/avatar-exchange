@@ -1,4 +1,4 @@
-import {post} from "../util/util";
+import {post, get} from "../util/util";
 
 /**
  * Buy stock shares
@@ -24,4 +24,13 @@ export const sellStock = async (symbol, shares) => {
         symbol: symbol,
         shares: shares
     });
+};
+
+/**
+ * Get data for a specific stock by symbol
+ * @param {string} symbol - Stock symbol (e.g., "AAPL")
+ * @returns {Promise} - Stock data object
+ */
+export const getStock = async (symbol) => {
+    return await get(`/stock/${symbol}`);
 };

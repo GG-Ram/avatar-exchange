@@ -5,6 +5,7 @@ from models import state
 from stock import Stock
 from config import STOCKS
 from auth_helpers import login_required, get_current_user
+import yfinance as yf
 
 stock_bp = Blueprint('stocks', __name__)
 
@@ -113,4 +114,45 @@ def sell_stock():
         }), 200
     else:
         return jsonify({"success": False, "error": "Insufficient shares or stock not owned"}), 400
+
+@stock_bp.route("/api/stock/<symbol>")
+def get_stock(symbol):
+    """Get data for a specific stock by symbol"""
+    symbol = symbol.upper().strip()
+    
+    if not symbol:
+        return jsonify({"error": "Invalid symbol"}), 400
+    
+    try:
+        # Check if stock is in cache, otherwise create new one
+        if symbol in state.stock_cache:
+            stock = state.stock_cache[symbol]
+        else:
+            # Try to get stock name from yfinance
+            try:
+                ticker = yf.Ticker(symbol)
+                info = ticker.info
+                name = info.get('longName') or info.get('shortName') or symbol
+            except:
+                name = symbol
+            
+            # Create stock and add to cache
+            stock = Stock(symbol, name, fetch_on_init=False)
+            state.stock_cache[symbol] = stock
+        
+        # Get last 120 minutes ending at current_index
+        data = stock.last_n_minutes_data(newest=state.current_index, n=120)
+        return jsonify(data)
+    except Exception as e:
+        print(f"Error fetching {symbol}: {e}")
+        return jsonify({
+            "symbol": symbol,
+            "name": symbol,
+            "price": 0,
+            "change": 0,
+            "changePercent": 0,
+            "graph": [0]*120,
+            "error": True,
+            "message": f"Failed to fetch stock data: {str(e)}"
+        }), 500
 

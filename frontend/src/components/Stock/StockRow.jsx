@@ -3,7 +3,7 @@ import './StockRow.css';
 import { buyStock, sellStock } from '../../services/stockService';
 import { useUser } from '../../Hooks/userContext';
 
-function StockRow({ stock, chartRef, onMouseMove, onMouseLeave }) {
+function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavorite, onToggleFavorite, isFeatured }) {
     const [shares, setShares] = useState(1);
     const { fetchUser } = useUser();
     
@@ -32,6 +32,23 @@ function StockRow({ stock, chartRef, onMouseMove, onMouseLeave }) {
 
     return (
         <div className="stock-row">
+            <div className="stock-badges">
+                {isFeatured && (
+                    <span className="stock-badge featured-badge" title="Featured Stock">
+                        ⭐ Featured
+                    </span>
+                )}
+                {onToggleFavorite && (
+                    <button
+                        className={`favorite-button ${isFavorite ? 'active' : ''}`}
+                        onClick={() => onToggleFavorite(stock.symbol)}
+                        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                        {isFavorite ? '❤️' : '🤍'}
+                    </button>
+                )}
+            </div>
             <div className="stock-info">
                 <div className="stock-header">
                     <div className="stock-name-section">
