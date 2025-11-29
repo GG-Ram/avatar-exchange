@@ -22,6 +22,8 @@ class UserModel:
             "balance": balance,
             "positions": [],  # List of stock positions
             "inventory": [],  # List of purchased items
+            "transactions": [],  # List of transactions
+            "alerts": [],  # List of price alerts
             "created_at": datetime.utcnow(),
             "updated_at": datetime.utcnow()
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getStockPrices } from "../../services/stockService";
+import { getStockPrices, sellStock } from "../../services/stockService";
 import { useUser } from "../../Hooks/userContext";
 import "./Portfolio.css";
 
@@ -7,6 +7,9 @@ const Portfolio = () => {
   const { user, fetchUser } = useUser();
   const [stockPrices, setStockPrices] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selling, setSelling] = useState({});
+  const [sellShares, setSellShares] = useState({});
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const fetchStockPrices = async () => {
@@ -50,6 +53,30 @@ const Portfolio = () => {
     );
   };
 
+  const handleSell = async (symbol, shares) => {
+    if (!shares || shares <= 0) {
+      setMessage({ type: 'error', text: 'Please enter a valid number of shares' });
+      setTimeout(() => setMessage(null), 3000);
+      return;
+    }
+
+    setSelling({ ...selling, [symbol]: true });
+    setMessage(null);
+    
+    try {
+      const response = await sellStock(symbol, shares);
+      setMessage({ type: 'success', text: response.message || `Successfully sold ${shares} shares of ${symbol}` });
+      fetchUser();
+      setSellShares({ ...sellShares, [symbol]: 1 });
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error) {
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to sell stock' });
+      setTimeout(() => setMessage(null), 3000);
+    } finally {
+      setSelling({ ...selling, [symbol]: false });
+    }
+  };
+
   if (loading)
     return <div className="loading">Loading portfolio data...</div>;
 
@@ -75,6 +102,12 @@ const Portfolio = () => {
         </div>
       </div>
 
+      {message && (
+        <div className={`portfolio-message ${message.type}`}>
+          {message.text}
+        </div>
+      )}
+
       <div className="holdings-section">
         <h2>Stock Holdings</h2>
         {user?.positions?.length > 0 ? (
@@ -91,6 +124,7 @@ const Portfolio = () => {
                 totalCost > 0
                   ? (profit / totalCost) * 100
                   : 0;
+              const sharesToSell = sellShares[symbol] || 1;
 
               return (
                 <div key={i} className="holding-card">
@@ -136,6 +170,28 @@ const Portfolio = () => {
                         ${profit.toFixed(2)} ({profitPercent.toFixed(2)}%)
                       </span>
                     </div>
+                  </div>
+                  <div className="holding-actions">
+                    <div className="sell-input-group">
+                      <label htmlFor={`sell-shares-${symbol}`}>Sell Shares:</label>
+                      <input
+                        id={`sell-shares-${symbol}`}
+                        type="number"
+                        min="1"
+                        max={position.shares}
+                        value={sharesToSell}
+                        onChange={(e) => setSellShares({ ...sellShares, [symbol]: Math.max(1, Math.min(position.shares, parseInt(e.target.value) || 1)) })}
+                        className="sell-shares-input"
+                        disabled={selling[symbol]}
+                      />
+                    </div>
+                    <button
+                      className="sell-button"
+                      onClick={() => handleSell(symbol, sharesToSell)}
+                      disabled={selling[symbol] || sharesToSell > position.shares}
+                    >
+                      {selling[symbol] ? 'Selling...' : `Sell ${sharesToSell}`}
+                    </button>
                   </div>
                 </div>
               );

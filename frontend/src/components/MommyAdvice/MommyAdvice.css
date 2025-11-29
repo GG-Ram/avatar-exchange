@@ -3,45 +3,21 @@
 }
 
 .advice-button {
-  background: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-pink-dark) 100%);
+  background: var(--primary-pink);
   color: var(--white);
   border: none;
   padding: 0.875rem 1.875rem;
   font-size: 1rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-md);
-  position: relative;
-  overflow: hidden;
-}
-
-.advice-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.advice-button:hover:not(:disabled)::before {
-  width: 300px;
-  height: 300px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-xs);
 }
 
 .advice-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.advice-button:active:not(:disabled) {
-  transform: translateY(0);
+  background: var(--primary-pink-dark);
+  box-shadow: var(--shadow-sm);
 }
 
 .advice-button:disabled {
@@ -52,24 +28,14 @@
 
 .advice-box {
   margin-top: var(--spacing-lg);
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe8ee 100%);
-  border: 2px solid var(--accent-pink);
+  background: var(--pink-bg-subtle);
+  border: var(--border-pink);
+  border-left: 3px solid var(--primary-pink);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: var(--shadow-md);
+  animation: slideInUp 0.3s ease-out;
+  box-shadow: var(--shadow-xs);
   position: relative;
-  overflow: hidden;
-}
-
-.advice-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-pink-light) 0%, var(--secondary-pink) 100%);
 }
 
 .advice-header {
@@ -83,9 +49,9 @@
 
 .advice-header h3 {
   margin: 0;
-  color: var(--primary-pink-dark);
-  font-size: 1.375rem;
-  font-weight: 700;
+  color: var(--primary-pink);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -125,12 +91,12 @@
 .advice-error {
   margin-top: var(--spacing-md);
   padding: var(--spacing-md);
-  background: linear-gradient(135deg, #ffe0e0 0%, #ffd0d0 100%);
-  border: 2px solid var(--danger);
+  background: var(--danger-light);
+  border: var(--border-medium);
+  border-left: 3px solid var(--danger);
   border-radius: var(--radius-md);
   color: var(--danger);
-  font-weight: 600;
-  animation: shake 0.5s ease;
+  font-weight: var(--font-weight-medium);
 }
 
 @keyframes slideInUp {

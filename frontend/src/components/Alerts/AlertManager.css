@@ -1,0 +1,76 @@
+.alert-manager {
+  background: var(--background-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+  margin-top: var(--spacing-lg);
+}
+
+.alert-manager h2 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-pink);
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.alert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--pink-bg-subtle);
+  border-radius: var(--radius-md);
+  border: var(--border-pink);
+}
+
+.alert-info {
+  flex: 1;
+}
+
+.alert-symbol {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-pink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.alert-condition {
+  font-size: 0.9375rem;
+  color: var(--text-dark);
+  margin-bottom: var(--spacing-xs);
+}
+
+.alert-date {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+}
+
+.delete-alert-button {
+  padding: 0.5rem 1rem;
+  background: var(--danger);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.delete-alert-button:hover {
+  background: #C0392B;
+}
+
+.empty-alerts {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-medium);
+}
+

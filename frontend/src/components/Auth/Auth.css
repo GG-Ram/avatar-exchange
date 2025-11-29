@@ -7,19 +7,21 @@
 }
 
 .auth-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    background: var(--background-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: var(--border-light);
+    padding: var(--spacing-xl);
     width: 100%;
     max-width: 400px;
 }
 
 .auth-card h2 {
-    margin: 0 0 30px 0;
-    color: #333;
+    margin: 0 0 var(--spacing-lg) 0;
+    color: var(--primary-pink);
     text-align: center;
-    font-size: 28px;
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
 }
 
 .form-group {
@@ -35,35 +37,39 @@
 
 .form-group input {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s;
+    padding: 0.75rem;
+    border: var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
     box-sizing: border-box;
+    background: var(--background-white);
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--primary-pink);
+    box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.1);
 }
 
 .auth-button {
     width: 100%;
-    padding: 12px;
-    background: #4CAF50;
-    color: white;
+    padding: 0.75rem;
+    background: var(--primary-pink);
+    color: var(--white);
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 10px;
+    transition: all var(--transition-fast);
+    margin-top: var(--spacing-sm);
+    box-shadow: var(--shadow-xs);
 }
 
 .auth-button:hover:not(:disabled) {
-    background: #45a049;
+    background: var(--primary-pink-dark);
+    box-shadow: var(--shadow-sm);
 }
 
 .auth-button:disabled {
@@ -72,12 +78,13 @@
 }
 
 .error-message {
-    background: #ffebee;
-    color: #c62828;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border-left: 4px solid #c62828;
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 3px solid var(--danger);
+    font-weight: var(--font-weight-medium);
 }
 
 .auth-switch {
@@ -87,9 +94,9 @@
 }
 
 .auth-switch a {
-    color: #4CAF50;
+    color: var(--primary-pink);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .auth-switch a:hover {

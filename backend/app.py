@@ -8,6 +8,10 @@ from routes.shop_routes import shop_bp
 from routes.mommy_routes import mommy_bp
 from routes.advice_routes import advice_bp
 from routes.auth_routes import auth_bp
+from routes.transaction_routes import transaction_bp
+from routes.alert_routes import alert_bp
+from routes.analytics_routes import analytics_bp
+from routes.leaderboard_routes import leaderboard_bp
 import database  # Initialize database connection
 import os
 from dotenv import load_dotenv
@@ -51,7 +55,7 @@ frontend_origins = [
 CORS(app, resources={
     r"/api/*": {
         "origins": frontend_origins,
-        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": False,  # Not needed with JWT tokens
         "expose_headers": ["Content-Type"]
@@ -65,6 +69,10 @@ app.register_blueprint(user_bp)
 app.register_blueprint(shop_bp)
 app.register_blueprint(mommy_bp)
 app.register_blueprint(advice_bp)
+app.register_blueprint(transaction_bp)
+app.register_blueprint(alert_bp)
+app.register_blueprint(analytics_bp)
+app.register_blueprint(leaderboard_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,28 +5,56 @@ import { useUser } from '../../Hooks/userContext';
 
 function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavorite, onToggleFavorite, isFeatured, userShares }) {
     const [shares, setShares] = useState(1);
-    const { fetchUser } = useUser();
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState(null);
+    const { fetchUser, user } = useUser();
     
     const isPositive = stock.change >= 0;
     const changeClass = isPositive ? 'positive' : 'negative';
+    const totalCost = stock.price * shares;
+    const canAfford = user?.balance >= totalCost;
 
     const handleBuy = async () => {
+        if (!canAfford) {
+            setMessage({ type: 'error', text: 'Insufficient funds' });
+            setTimeout(() => setMessage(null), 3000);
+            return;
+        }
+        
+        setLoading(true);
+        setMessage(null);
         try {
             const response = await buyStock(stock.symbol, shares);
-            alert(response.message);
+            setMessage({ type: 'success', text: response.message || `Successfully bought ${shares} shares of ${stock.symbol}` });
             fetchUser(); // Refresh user data
+            setTimeout(() => setMessage(null), 3000);
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to buy stock');
+            setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to buy stock' });
+            setTimeout(() => setMessage(null), 3000);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleSell = async () => {
+        if (userShares < shares) {
+            setMessage({ type: 'error', text: `You only own ${userShares} shares` });
+            setTimeout(() => setMessage(null), 3000);
+            return;
+        }
+        
+        setLoading(true);
+        setMessage(null);
         try {
             const response = await sellStock(stock.symbol, shares);
-            alert(response.message);
+            setMessage({ type: 'success', text: response.message || `Successfully sold ${shares} shares of ${stock.symbol}` });
             fetchUser(); // Refresh user data
+            setTimeout(() => setMessage(null), 3000);
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to sell stock');
+            setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to sell stock' });
+            setTimeout(() => setMessage(null), 3000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,6 +98,12 @@ function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavo
                     </div>
                 </div>
 
+                {message && (
+                    <div className={`trade-message ${message.type}`}>
+                        {message.text}
+                    </div>
+                )}
+                
                 <div className="buy-section">
                     <div className="shares-input-group">
                         <label htmlFor={`shares-${stock.symbol}`}>Shares:</label>
@@ -78,19 +112,33 @@ function StockRow({ stock, chartRef, onMouseMove, onMouseLeave, onRemove, isFavo
                             type="number"
                             min="1"
                             value={shares}
-                            onChange={(e) => setShares(parseInt(e.target.value) || 1)}
+                            onChange={(e) => setShares(Math.max(1, parseInt(e.target.value) || 1))}
                             className="shares-input"
+                            disabled={loading}
                         />
                     </div>
-                    <div className="total-cost">
-                        Total: ${(stock.price * shares).toFixed(2)}
+                    <div className={`total-cost ${!canAfford && userShares === 0 ? 'insufficient' : ''}`}>
+                        Total: ${totalCost.toFixed(2)}
+                        {!canAfford && userShares === 0 && (
+                            <span className="insufficient-hint"> (Insufficient funds)</span>
+                        )}
                     </div>
                     <div className="action-buttons">
-                        <button className="buy-button" onClick={handleBuy}>
-                            Buy {shares}
+                        <button 
+                            className="buy-button" 
+                            onClick={handleBuy}
+                            disabled={loading || !canAfford}
+                            title={!canAfford ? 'Insufficient funds' : `Buy ${shares} shares`}
+                        >
+                            {loading ? 'Processing...' : `Buy ${shares}`}
                         </button>
-                        <button className="sell-button" onClick={handleSell}>
-                            Sell {shares}
+                        <button 
+                            className="sell-button" 
+                            onClick={handleSell}
+                            disabled={loading || userShares === 0 || userShares < shares}
+                            title={userShares === 0 ? 'You don\'t own this stock' : userShares < shares ? `You only own ${userShares} shares` : `Sell ${shares} shares`}
+                        >
+                            {loading ? 'Processing...' : `Sell ${shares}`}
                         </button>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ from accessory import Accessory
 from stock import Stock
 from models.user_model import UserModel
 from config import STOCKS
+from datetime import datetime
 
 class Portfolio_Stock:
     def __init__(self, shares, stock_data: Stock, buyPrice=None):
@@ -90,12 +91,41 @@ class User:
                 "buyPrice": pos.buyPrice
             })
         
+        # Get existing transactions to preserve them
+        from models.user_model import UserModel
+        user_data = UserModel.find_by_id(self.user_id)
+        existing_transactions = user_data.get("transactions", []) if user_data else []
+        
         # Update all fields in a single operation
         UserModel.update_user(self.user_id, {
             "balance": round(self.balance, 2),
             "positions": positions_data,
-            "inventory": self.inventory
+            "inventory": self.inventory,
+            "transactions": existing_transactions
         })
+    
+    def _add_transaction(self, transaction):
+        """Add a transaction to user's transaction history"""
+        if not self.user_id:
+            return
+        
+        try:
+            from models.user_model import UserModel
+            user_data = UserModel.find_by_id(self.user_id)
+            if not user_data:
+                return
+            
+            transactions = user_data.get("transactions", [])
+            transactions.append(transaction)
+            
+            # Keep only last 1000 transactions
+            if len(transactions) > 1000:
+                transactions = transactions[-1000:]
+            
+            # Update transactions in database
+            UserModel.update_user(self.user_id, {"transactions": transactions})
+        except Exception as e:
+            print(f"Error adding transaction: {e}")
 
     # ----------------- Shop / Inventory -----------------
     def buy_product(self, product_id, products_list):
@@ -156,6 +186,18 @@ class User:
 
         self.balance -= cost
 
+        # Record transaction
+        self._add_transaction({
+            "type": "BUY",
+            "symbol": stock.symbol,
+            "name": stock.name,
+            "shares": shares,
+            "price": stock.price,
+            "total": cost,
+            "profit_loss": 0,  # No profit/loss on buy
+            "timestamp": datetime.utcnow().isoformat()
+        })
+
         # Update existing stock in portfolio if already owned
         for position in self.positions:
             if position.stock_data.symbol == stock.symbol:
@@ -188,17 +230,31 @@ class User:
                     # Get the latest price from the market
                     position.stock_data.update_price()  # fetch latest price
                     current_price = position.stock_data.price
+                    revenue = current_price * shares
+                    profit_loss = (current_price - position.buyPrice) * shares
                     
                     print(f"📈 Current Market Price: ${current_price}")
-                    print(f"💵 Money to receive: {shares} shares × ${current_price} = ${current_price * shares}")
+                    print(f"💵 Money to receive: {shares} shares × ${current_price} = ${revenue}")
                     
                     # Update balance with current market value
-                    self.balance += current_price * shares
+                    self.balance += revenue
                     
                     print(f"💰 Balance AFTER sell: ${self.balance}")
                     print(f"📊 Profit/Loss per share: ${current_price - position.buyPrice}")
-                    print(f"📊 Total Profit/Loss: ${(current_price - position.buyPrice) * shares}")
+                    print(f"📊 Total Profit/Loss: ${profit_loss}")
                     print(f"{'='*50}\n")
+                    
+                    # Record transaction
+                    self._add_transaction({
+                        "type": "SELL",
+                        "symbol": symbol,
+                        "name": position.stock_data.name,
+                        "shares": shares,
+                        "price": current_price,
+                        "total": revenue,
+                        "profit_loss": profit_loss,
+                        "timestamp": datetime.utcnow().isoformat()
+                    })
                     
                     # Reduce shares in portfolio
                     position.shares -= shares

@@ -1,0 +1,133 @@
+.analytics-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+  background: var(--background-light);
+}
+
+.analytics-header {
+  margin-bottom: var(--spacing-lg);
+  background: var(--background-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+}
+
+.analytics-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-pink);
+  letter-spacing: -0.02em;
+}
+
+.analytics-header p {
+  margin: 0;
+  color: var(--text-medium);
+  font-size: 1rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.metric-card {
+  background: var(--background-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+}
+
+.metric-value.positive {
+  color: var(--success);
+}
+
+.metric-value.negative {
+  color: var(--danger);
+}
+
+.metric-subtext {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  margin-top: var(--spacing-xs);
+}
+
+.performers-section {
+  background: var(--background-white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+}
+
+.performers-section h2 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-pink);
+}
+
+.performers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.performer-card {
+  background: var(--pink-bg-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border: var(--border-pink);
+  text-align: center;
+}
+
+.performer-label {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+}
+
+.performer-symbol {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-pink);
+  margin-bottom: var(--spacing-sm);
+}
+
+.performer-value {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.performer-value.positive {
+  color: var(--success);
+}
+
+.performer-value.negative {
+  color: var(--danger);
+}
+

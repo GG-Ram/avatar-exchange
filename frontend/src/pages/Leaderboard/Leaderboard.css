@@ -1,0 +1,107 @@
+.leaderboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+  background: var(--background-light);
+}
+
+.leaderboard-header {
+  margin-bottom: var(--spacing-lg);
+  background: var(--background-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+}
+
+.leaderboard-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-pink);
+  letter-spacing: -0.02em;
+}
+
+.leaderboard-header p {
+  margin: 0;
+  color: var(--text-medium);
+  font-size: 1rem;
+}
+
+.leaderboard-table-container {
+  background: var(--background-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-light);
+  overflow: hidden;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+  background: var(--pink-bg-subtle);
+  border-bottom: var(--border-light);
+}
+
+.leaderboard-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.leaderboard-table td {
+  padding: var(--spacing-md);
+  border-bottom: var(--border-light);
+  font-size: 0.9375rem;
+  color: var(--text-dark);
+}
+
+.leaderboard-table tbody tr:hover {
+  background: var(--pink-bg-subtle);
+}
+
+.leaderboard-table tbody tr.rank-1 {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.leaderboard-table tbody tr.rank-2 {
+  background: rgba(192, 192, 192, 0.1);
+}
+
+.leaderboard-table tbody tr.rank-3 {
+  background: rgba(205, 127, 50, 0.1);
+}
+
+.rank-cell {
+  font-weight: var(--font-weight-bold);
+  font-size: 1.125rem;
+}
+
+.username-cell {
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-pink);
+}
+
+.value-cell {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.positive {
+  color: var(--success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.negative {
+  color: var(--danger);
+  font-weight: var(--font-weight-semibold);
+}
+

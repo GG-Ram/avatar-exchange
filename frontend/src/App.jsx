@@ -5,6 +5,9 @@ import ShopPage from "./pages/ShopPage/ShopPage";
 import { UserProvider } from "./Hooks/userContext.jsx";
 import Portfolio from "./pages/Portfolio/Portfolio.jsx";
 import AvatarPage from './pages/AvatarPage/AvatarPage.jsx';
+import Transactions from './pages/Transactions/Transactions.jsx';
+import Analytics from './pages/Analytics/Analytics.jsx';
+import Leaderboard from './pages/Leaderboard/Leaderboard.jsx';
 import Login from "./components/Auth/Login.jsx";
 import Register from "./components/Auth/Register.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -52,6 +55,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Portfolio />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/transactions" 
+          element={
+            <ProtectedRoute>
+              <Transactions />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/analytics" 
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/leaderboard" 
+          element={
+            <ProtectedRoute>
+              <Leaderboard />
             </ProtectedRoute>
           } 
         />

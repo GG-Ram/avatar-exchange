@@ -48,6 +48,36 @@ const Navbar = () => {
               
               <li className="navbar-item">
                 <Link 
+                  to="/transactions" 
+                  className={`navbar-link ${location.pathname === '/transactions' ? 'active' : ''}`}
+                >
+                  <span className="icon">📋</span>
+                  <span>Transactions</span>
+                </Link>
+              </li>
+              
+              <li className="navbar-item">
+                <Link 
+                  to="/analytics" 
+                  className={`navbar-link ${location.pathname === '/analytics' ? 'active' : ''}`}
+                >
+                  <span className="icon">📊</span>
+                  <span>Analytics</span>
+                </Link>
+              </li>
+              
+              <li className="navbar-item">
+                <Link 
+                  to="/leaderboard" 
+                  className={`navbar-link ${location.pathname === '/leaderboard' ? 'active' : ''}`}
+                >
+                  <span className="icon">🏆</span>
+                  <span>Leaderboard</span>
+                </Link>
+              </li>
+              
+              <li className="navbar-item">
+                <Link 
                   to="/shop" 
                   className={`navbar-link ${location.pathname === '/shop' ? 'active' : ''}`}
                 >

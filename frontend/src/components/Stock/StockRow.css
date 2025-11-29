@@ -1,15 +1,14 @@
 .stock-row {
   display: flex;
   align-items: center;
-  background: var(--white);
+  background: var(--background-white);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
   gap: var(--spacing-lg);
-  border: 1px solid rgba(255, 107, 157, 0.1);
+  border: var(--border-light);
   position: relative;
-  overflow: hidden;
 }
 
 .stock-badges {
@@ -63,31 +62,14 @@
 }
 
 .favorite-button.active {
-  background: linear-gradient(135deg, var(--primary-pink) 0%, var(--secondary-pink) 100%);
+  background: var(--primary-pink);
   border-color: var(--primary-pink);
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
-}
-
-.stock-row::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--primary-pink-light) 0%, var(--secondary-pink) 100%);
-  transform: scaleY(0);
-  transition: transform var(--transition-normal);
-}
-
-.stock-row:hover::before {
-  transform: scaleY(1);
+  color: var(--white);
 }
 
 .stock-row:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
-  border-color: rgba(255, 107, 157, 0.3);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-pink);
 }
 
 .stock-info {
@@ -117,12 +99,12 @@
 
 .owned-shares-badge {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 0.25rem 0.625rem;
-  background: linear-gradient(135deg, var(--primary-pink-light) 0%, var(--secondary-pink) 100%);
-  color: var(--primary-pink-dark);
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 107, 157, 0.2);
+  background: var(--pink-bg-subtle);
+  color: var(--primary-pink);
+  border-radius: var(--radius-sm);
+  border: var(--border-pink);
   white-space: nowrap;
 }
 
@@ -219,11 +201,57 @@
 .total-cost {
   font-size: 1rem;
   color: var(--text-dark);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, var(--background-light) 0%, #ffe8f0 100%);
+  background: var(--pink-bg-subtle);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 107, 157, 0.1);
+  border: var(--border-pink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.total-cost.insufficient {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.insufficient-hint {
+  font-size: 0.75rem;
+  color: var(--danger);
+  font-weight: var(--font-weight-normal);
+}
+
+.trade-message {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+  animation: slideInDown 0.3s ease-out;
+}
+
+.trade-message.success {
+  background: var(--success-light);
+  color: var(--success);
+  border-left: 3px solid var(--success);
+}
+
+.trade-message.error {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-left: 3px solid var(--danger);
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .action-buttons {
@@ -233,60 +261,46 @@
 
 .buy-button,
 .sell-button {
-  padding: 0.875rem 1.75rem;
+  padding: 0.75rem 1.5rem;
   color: var(--white);
   border: none;
   border-radius: var(--radius-md);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: all var(--transition-fast);
   font-size: 0.9375rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-}
-
-.buy-button::before,
-.sell-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.buy-button:hover::before,
-.sell-button:hover::before {
-  width: 300px;
-  height: 300px;
+  box-shadow: var(--shadow-xs);
+  min-width: 100px;
 }
 
 .buy-button {
-  background: linear-gradient(135deg, var(--success) 0%, #229954 100%);
+  background: var(--success);
 }
 
-.buy-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+.buy-button:hover:not(:disabled) {
+  background: #229954;
+  box-shadow: var(--shadow-sm);
+}
+
+.buy-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gray-400);
 }
 
 .sell-button {
-  background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
+  background: var(--danger);
 }
 
-.sell-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+.sell-button:hover:not(:disabled) {
+  background: #C0392B;
+  box-shadow: var(--shadow-sm);
 }
 
-.buy-button:active,
-.sell-button:active {
-  transform: translateY(0);
+.sell-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gray-400);
 }
 
 .stock-chart {
