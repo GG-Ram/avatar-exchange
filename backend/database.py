@@ -1,7 +1,7 @@
 """MongoDB database connection and configuration"""
 
 from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure
+from pymongo.errors import ConnectionFailure, OperationFailure
 import os
 from typing import Optional
 from dotenv import load_dotenv
@@ -15,6 +15,7 @@ class Database:
     _instance: Optional['Database'] = None
     _client: Optional[MongoClient] = None
     _db = None
+    _connected = False
     
     def __new__(cls):
         if cls._instance is None:
@@ -22,11 +23,14 @@ class Database:
         return cls._instance
     
     def __init__(self):
-        if self._client is None:
-            self.connect()
+        # Don't connect immediately - make it lazy
+        pass
     
     def connect(self):
         """Establish connection to MongoDB"""
+        if self._connected and self._client is not None:
+            return
+        
         # Get MongoDB URI from environment variable or use default
         mongodb_uri = os.getenv('MONGODB_URI', 'mongodb+srv://rf9301793_db_user:ayU2smZsBUQdWhtH@avatar-exchange.tqjbhzt.mongodb.net/')
         database_name = os.getenv('MONGODB_DB_NAME', 'avatar_exchange')
@@ -36,15 +40,26 @@ class Database:
             # Test the connection
             self._client.admin.command('ping')
             self._db = self._client[database_name]
+            self._connected = True
             print(f"Successfully connected to MongoDB database: {database_name}")
-        except ConnectionFailure as e:
+        except (ConnectionFailure, OperationFailure) as e:
             print(f"Failed to connect to MongoDB: {e}")
+            print(f"   Please check your MONGODB_URI in .env file")
+            self._client = None
+            self._db = None
+            self._connected = False
+            raise
+        except Exception as e:
+            print(f"Unexpected error connecting to MongoDB: {e}")
+            self._client = None
+            self._db = None
+            self._connected = False
             raise
     
     @property
     def db(self):
         """Get the database instance"""
-        if self._db is None:
+        if self._db is None or not self._connected:
             self.connect()
         return self._db
     
@@ -62,8 +77,9 @@ class Database:
         """Close the database connection"""
         if self._client:
             self._client.close()
+            self._connected = False
             print("MongoDB connection closed")
 
-# Global database instance
+# Global database instance (lazy connection - won't connect until first use)
 db = Database()
 
